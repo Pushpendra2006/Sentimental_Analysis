@@ -6,11 +6,10 @@ from transformers import pipeline
 def load_model():
     classifier = pipeline(
         "text-classification",
-        model="sentiment_model",
-        tokenizer="sentiment_model"
+        model="pushpendra2006/sentimental_analysis",
+        token=None   # only if public
     )
     return classifier
-
 model = load_model()
 
 st.title("📺 YouTube Comment Sentiment Analyzer (BERT - 3 Class)")
@@ -37,3 +36,4 @@ if st.button("Predict"):
 
     else:
         st.warning("Please enter text.")
+
