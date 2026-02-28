@@ -1,39 +1,50 @@
 import streamlit as st
 from transformers import pipeline
 
-# Load fine-tuned model
+# -------------------------------
+# Load Model (Cached)
+# -------------------------------
 @st.cache_resource
 def load_model():
     classifier = pipeline(
         "text-classification",
-        model="pushpendra2006/sentimental_analysis",
-        token=None   # only if public
+        model="cardiffnlp/twitter-roberta-base-sentiment",
+        return_all_scores=False
     )
     return classifier
+
 model = load_model()
 
-st.title("📺 YouTube Comment Sentiment Analyzer (BERT - 3 Class)")
-st.markdown("Predicts **Positive / Neutral / Negative** sentiment.")
+# -------------------------------
+# UI
+# -------------------------------
+st.title("📺 YouTube Comment Sentiment Analyzer")
+st.markdown("Predicts **Positive / Neutral / Negative** sentiment using Transformers.")
 
-user_text = st.text_area("Enter a comment:")
+user_text = st.text_area(
+    "Enter a YouTube comment:",
+    placeholder="This video was okay."
+)
 
-if st.button("Predict"):
-    if user_text.strip() != "":
+if st.button("Predict Sentiment"):
+    if user_text.strip():
         result = model(user_text)[0]
-        
+
         label = result["label"]
         score = result["score"]
 
-        st.subheader(f"Sentiment: **{label}**")
-        st.write(f"Confidence: **{score:.4f}**")
-
+        # Model label mapping
         if label == "LABEL_0":
-            st.error("😡 Negative")
+            sentiment = "Negative 😡"
+            st.error(f"Sentiment: {sentiment}")
         elif label == "LABEL_1":
-            st.info("😐 Neutral")
+            sentiment = "Neutral 😐"
+            st.info(f"Sentiment: {sentiment}")
         else:
-            st.success("😊 Positive")
+            sentiment = "Positive 😊"
+            st.success(f"Sentiment: {sentiment}")
+
+        st.write(f"Confidence Score: **{score:.4f}**")
 
     else:
-        st.warning("Please enter text.")
-
+        st.warning("Please enter some text first.")
