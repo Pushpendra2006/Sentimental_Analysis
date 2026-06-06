@@ -1,9 +1,6 @@
 import streamlit as st
 from transformers import pipeline
 
-# -------------------------------
-# Load Model (Cached)
-# -------------------------------
 @st.cache_resource
 def load_model():
     classifier = pipeline(
@@ -14,11 +11,7 @@ def load_model():
     return classifier
 
 model = load_model()
-
-# -------------------------------
-# UI
-# -------------------------------
-st.title("📺 YouTube Comment Sentiment Analyzer")
+st.title("YouTube Comment Sentiment Analyzer")
 st.markdown("Predicts **Positive / Neutral / Negative** sentiment using Transformers.")
 
 user_text = st.text_area(
@@ -29,7 +22,6 @@ user_text = st.text_area(
 if st.button("Predict Sentiment"):
     if user_text.strip():
         result = model(user_text)[0]
-
         label = result["label"]
         score = result["score"]
 
